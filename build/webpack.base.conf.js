@@ -54,6 +54,9 @@ module.exports = {
           name: utils.assetsPath('img/[name].[hash:7].[ext]')
         }
       },
+
+      //svg处理
+      // {test: /\.svg(\?v=\d+\.\d+\.\d+)?(\?#=\w+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'},
       {
         test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
         loader: 'url-loader',
