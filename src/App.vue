@@ -25,7 +25,7 @@
 <style>
   @import "~normalize.css";
 
-  html, body, ul, li, a, div, svg, input, span, img {
+  html, body, ul, li, a, div, svg, use, input, span, img {
     margin: 0;
     padding: 0;
     outline: none;

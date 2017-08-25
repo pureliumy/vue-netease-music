@@ -10,7 +10,7 @@
         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#back" xlink:title="后退"></use>
       </svg>
       <svg class="icon-next route-next" @click="go('forward')" :class="{'route-active':forward}">
-        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#next" xlink:title="前进"></use>
+        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#head_next" xlink:title="前进"></use>
       </svg>
     </div>
     <div class="header-search">
@@ -20,7 +20,6 @@
              @focus="focus()"
              @blur="blur()"
              @keydown.enter="search()">
-      <span>{{hLength}}</span> <span>{{hIndex}}</span>
       <svg class="icon-search search-btn" @click="search()">
         <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#search"></use>
       </svg>
@@ -151,7 +150,7 @@
   .header {
     width: 100%;
     height: 50px;
-    background: #c62f2f;
+    background: #c72e2e;
     position: absolute;
     top: 0;
     left: 0;

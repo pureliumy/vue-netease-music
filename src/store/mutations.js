@@ -6,24 +6,24 @@ import {
 
 export default {
   [RECORD_USER_PROFILE] (state, {
-    user_profile,
-    user_id
+    userProfile,
+    userId
   }) {
-    state.user_profile = user_profile
-    state.uid = user_id
+    state.userProfile = userProfile
+    state.uid = userId
   },
 
-  [RECORD_USER_PLAYLIST] (state, user_playlist) {
+  [RECORD_USER_PLAYLIST] (state, userPlaylist) {
     if (!state.login) {
       return
     }
-    state.user_playlist = user_playlist
+    state.userPlaylist = userPlaylist
   },
 
-  [RECORD_USER_FM] (state, user_fm) {
+  [RECORD_USER_FM] (state, userFm) {
     if (!state.login) {
       return
     }
-    state.user_fm = user_fm
+    state.userFm = userFm
   }
 }
