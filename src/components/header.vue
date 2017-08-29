@@ -237,7 +237,6 @@
     position: absolute;
     color: #fff;
     box-sizing: border-box;
-    -webkit-transform: translateZ(0px);
     width: 100%;
     height: 100%;
     top: 0;
@@ -264,7 +263,7 @@
   }
 
   .user-face {
-    display: inline-block;
+    cursor: pointer;
     float: left;
     width: 24px;
     height: 24px;
