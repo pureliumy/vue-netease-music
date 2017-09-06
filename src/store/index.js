@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import mutations from 'mutations'
 
-Vue.use(Vuex)
+import mutations from './mutations'
+import actions from './actions'
+import getters from './getters'
 
 const state = {
   login: false,
@@ -18,10 +19,17 @@ const state = {
   playlistDetail: {},
   songDetail: {},
   play: false,
-  banners: {}
+  banners: {},
+  topList: {}
 }
 
-export default new Vuex.Store({
+Vue.use(Vuex)
+
+const store = new Vuex.Store({
   state,
-  mutations
+  mutations,
+  actions,
+  getters
 })
+
+export default store

@@ -1,16 +1,30 @@
 <template>
   <div class="play-list">
-    {{msg}}
+    {{this.banners}}
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'playlist',
-    data () {
-      return {
-        msg: 'playlist'
-      }
+import { mapState, mapActions } from 'vuex'
+export default {
+  name: 'playlist',
+  data () {
+    return {
+      msg: 'playlist'
     }
+  },
+  computed: {
+    ...mapState([
+      'banners'
+    ])
+  },
+  methods: {
+    ...mapActions([
+      'getBanner'
+    ])
+  },
+  mounted: function () {
+    this.getBanner()
   }
+}
 </script>

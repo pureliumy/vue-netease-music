@@ -3,10 +3,14 @@
     <header-top></header-top>
     <sidebar></sidebar>
     <div class="main">
-      <router-view></router-view>
+      <div v-bar>
+        <div>
+          <router-view></router-view>
+        </div>
+      </div>
     </div>
     <footer-bottom></footer-bottom>
-    <svg-icon></svg-icon>
+    <svg-icon v-once></svg-icon>
   </div>
 </template>
 
@@ -40,8 +44,12 @@ img {
   padding: 0;
   outline: none;
 }
-</style>
-<style scoped>
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .app {
   box-sizing: border-box;
   font-family: "Microsoft Yahei", 'Noto Sans CJK SC Medium', arial, helvetica, sans-serif, simsun;
@@ -52,17 +60,46 @@ img {
   height: 670px;
   position: relative;
   margin: 10px auto 0;
-  box-shadow: 0 0 30px 3px #ccc;
+  box-shadow: 0 0 40px rgba(0, 0, 0, .3);
 }
 
 .main {
-  padding: 0 30px;
-  width: 762px;
-  height: 570px;
+  /* padding: 0 30px; */
+  height: 572px;
   position: absolute;
   left: 200px;
+  right: 0;
   top: 50px;
   z-index: 1;
   background: #fafafa;
+}
+
+.vb {
+  height: 100%;
+}
+
+.vb>.vb-dragger {
+  z-index: 5;
+  width: 8px;
+  right: 0;
+}
+
+.vb>.vb-dragger>.vb-dragger-styler {
+  backface-visibility: hidden;
+  transform: rotate3d(0, 0, 0, 0);
+  transition: background-color 100ms ease-out;
+  background-color: #e1e1e2;
+  border-radius: 6px;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.vb>.vb-dragger:hover>.vb-dragger-styler {
+  background-color: #cfcfd1;
+}
+
+.vb.vb-dragging>.vb-dragger>.vb-dragger-styler {
+  background-color: rgba(50, 50, 50, .3);
 }
 </style>

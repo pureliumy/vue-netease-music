@@ -19,14 +19,16 @@
         </span>
         {{item.title}}
       </router-link>
-      <router-link v-if="login" v-for="item in sidebar_my_login" :to="item.path" tag="li" :key="item.id" class="sidebar-my_li">
-        <span class="sidebar-recom_span">
-          <svg class="sidebar-recom_svg" :class="item.class">
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" v-bind:xlink:href="'#'+item.class"></use>
-          </svg>
-        </span>
-        {{item.title}}
-      </router-link>
+      <transition v-if="login">
+        <router-link v-for="item in sidebar_my_login" :to="item.path" tag="li" :key="item.id" class="sidebar-my_li">
+          <span class="sidebar-recom_span">
+            <svg class="sidebar-recom_svg" :class="item.class">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" v-bind:xlink:href="'#'+item.class"></use>
+            </svg>
+          </span>
+          {{item.title}}
+        </router-link>
+      </transition>
     </ul>
     <ul class="sidebar-playlist" v-if="login"></ul>
     <ul class="sidebar-collection" v-if="login"></ul>
@@ -55,7 +57,7 @@ export default {
           class: 'mv'
         }, {
           title: '朋友',
-          path: '/friends',
+          path: '/friend',
           class: 'friend'
         }
       ],
@@ -103,6 +105,7 @@ export default {
   top: 50px;
   left: 0;
   box-shadow: 1px 0 0 0 #e1e2e2;
+  z-index: 5;
 }
 
 .sidebar>ul {
@@ -120,9 +123,9 @@ ul.sidebar-recom {
   position: relative;
   list-style: none;
   display: block;
-  padding-top: 10px;
-  padding-bottom: 9px;
-  padding-left: 41px;
+  padding-top: 9px;
+  padding-bottom: 10px;
+  padding-left: 44px;
   margin-right: 10px;
   cursor: pointer;
 }
@@ -133,14 +136,16 @@ ul.sidebar-recom {
   fill: #000;
 }
 
-li.router-link-active {
+.sidebar>ul>li.router-link-active {
   background: rgba(31, 33, 51, .06);
   border-left: 3px solid #c62f2f;
   color: #000;
+  padding-left: 41px;
 }
 
-li.router-link-active svg {
+.sidebar>ul>li.router-link-active svg {
   fill: #000;
+  left: 14px;
 }
 
 .sidebar>ul::before {
@@ -182,6 +187,6 @@ svg.song {
   fill: #5c5c5c;
   position: absolute;
   top: 7px;
-  left: 14px;
+  left: 17px;
 }
 </style>

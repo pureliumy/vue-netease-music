@@ -1,11 +1,15 @@
-import {
-  RECORD_USER_PROFILE,
-  RECORD_USER_PLAYLIST,
-  RECORD_USER_FM
-} from 'mutation-types'
+import * as types from './mutation-types'
 
 export default {
-  [RECORD_USER_PROFILE] (state, {
+  // 记录banner图信息
+  [types.RECORD_BANNER] (state, { data }) {
+    state.banners = data.banners
+  },
+  // 记录排行榜信息
+  [types.RECORD_TOP_LIST] (state, { data }) {
+    state.topList = data.result
+  },
+  [types.RECORD_USER_PROFILE] (state, {
     userProfile,
     userId
   }) {
@@ -13,14 +17,14 @@ export default {
     state.uid = userId
   },
 
-  [RECORD_USER_PLAYLIST] (state, userPlaylist) {
+  [types.RECORD_USER_PLAYLIST] (state, userPlaylist) {
     if (!state.login) {
       return
     }
     state.userPlaylist = userPlaylist
   },
 
-  [RECORD_USER_FM] (state, userFm) {
+  [types.RECORD_USER_FM] (state, userFm) {
     if (!state.login) {
       return
     }
