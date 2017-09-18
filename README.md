@@ -1,21 +1,33 @@
 # vue-netease-music
 
-> A Vue.js project
+> A Vue.js project just for learning, relevant data and resources are copyrighted by NetEase.
 
-## Build Setup
+## Run locally
+This project is dependent on [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) project for getting offical data, so you need to run `NeteaseCloudMusicApi` locally first.
 
 ``` bash
+# clone NeteaseCloudMusicApi
+git clone https://github.com/Binaryify/NeteaseCloudMusicApi.git
+
+# install dependencies
+npm install
+
+# server run at localhost:3000
+npm start
+```
+Now you can experience it
+``` bash
+# clone project
+git clone https://github.com/pureliumy/vue-netease-music.git
+
 # install dependencies
 npm install
 
 # serve with hot reload at localhost:8080
 npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
+## Summary of project
+I came across many problems in this project, some of them have been resolved and some still exist, on the way to find and resolve problems I have learn a lot. For a better study of new knowledge and code experience, I am planning to write some summary referring to various aspects of this project after I finished the major function.
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## License
+The MIT License (MIT)
