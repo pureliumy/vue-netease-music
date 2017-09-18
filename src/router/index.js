@@ -4,7 +4,7 @@ import Vue from 'vue'
 
 const Discover = resolve => require(['../pages/discover/discover'], resolve)
 const Playlist = resolve => require(['../pages/discover/children/playlist'], resolve)
-const Home = resolve => require(['../pages/discover/children/home'], resolve)
+const Home = resolve => require(['../pages/discover/children/home/home'], resolve)
 const Djradio = resolve => require(['../pages/discover/children/djradio'], resolve)
 const Rank = resolve => require(['../pages/discover/children/rank'], resolve)
 const Artist = resolve => require(['../pages/discover/children/artist'], resolve)

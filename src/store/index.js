@@ -20,7 +20,10 @@ const state = {
   songDetail: {},
   play: false,
   banners: {},
-  topList: {}
+  topList: {},
+  personalized: {},
+  dailyRecom: {},
+  newSongs: {}
 }
 
 Vue.use(Vuex)

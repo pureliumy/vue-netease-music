@@ -6,9 +6,9 @@
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#prev"></use>
         </svg>
       </span>
-      <span title="播放（Ctrl+P）" class="play">
+      <span :title="title" class="play" @click="play()">
         <svg class="play">
-          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play"></use>
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" :xlink:href="playOrPauseIcon"></use>
         </svg>
       </span>
       <span title="下一首（Ctrl+Right）" class="next">
@@ -18,13 +18,13 @@
       </span>
     </div>
     <div class="progress">
-      <span class="now">00:00</span>
-      <div class="buffer-bar">
-        <div class="prog-bar"></div>
-        <div class="prog-now"></div>
-        <div class="prog-drag"></div>
+      <span class="now">{{currTime}}</span>
+      <div class="buffer-bar" @mousedown="changeProgress($event)">
+        <div class="prog-bar" ref="progBar"></div>
+        <div class="prog-now" ref="progNow"></div>
+        <div class="prog-drag" ref="progDrag" @mousedown="drag($event)"></div>
       </div>
-      <span class="all">04:49</span>
+      <span class="all">{{allTime}}</span>
     </div>
     <div class="volume">
       <span title="静音">
@@ -58,6 +58,7 @@
         <span class="num">0</span>
       </div>
     </div>
+    <audio :src="src" ref="audio" preload></audio>
   </div>
 </template>
 
@@ -66,8 +67,105 @@ export default {
   name: 'footer',
   data () {
     return {
-      loopTitle: '列表循环'
+      loopTitle: '列表循环',
+      title: '播放（Ctrl+P）',
+      playOrPauseIcon: '#play',
+      playing: false,
+      src: 'http://m10.music.126.net/20170917194652/14849ac32a1b1e2ac9ba7147235449ea/ymusic/f1ae/0bd1/31a9/5d64960d0cbebc0d089bc85a6ef54680.mp3',
+      audio: null,
+      progNow: null,
+      progDrag: null,
+      progBar: null,
+      currTime: '00:00',
+      allTime: null,
+      timer1: null,
+      timer2: null
     }
+  },
+  methods: {
+    init () {
+      this.audio = this.$refs.audio
+      this.progBar = this.$refs.progBar
+      this.progDrag = this.$refs.progDrag
+      this.progNow = this.$refs.progNow
+      this.progDrag.style.left = '-8px'
+    },
+    play () {
+      if (!this.playing) {
+        this.audio.play()
+        this.playing = true
+        this.playOrPauseIcon = '#pause'
+
+        this.time(this.audio.duration, 'allTime')
+        const self = this
+        this.timer1 = setInterval(function () {
+          self.time(self.audio.currentTime, 'currTime')
+        }, 500)
+
+        this.timer2 = setInterval(function () {
+          self.progress()
+        }, 1000)
+      } else {
+        this.audio.pause()
+        this.playing = false
+        this.playOrPauseIcon = '#play'
+        clearInterval(this.timer1)
+        clearInterval(this.timer2)
+      }
+    },
+    changeProgress (e) {
+      if (e.target === this.progDrag) {
+        return
+      }
+      this.currTime = this.audio.currentTime
+      this.progNow.style.width = e.offsetX + 'px'
+      this.progDrag.style.left = e.offsetX - 8 + 'px'
+    },
+    time (timeValue, result) {
+      const time = parseInt(timeValue)
+      const minutes = Math.floor(time / 60)
+      const seconds = time % 60
+      if (seconds < 10) {
+        this[result] = '0' + minutes + ':0' + seconds
+      } else {
+        this[result] = '0' + minutes + ':' + seconds
+      }
+    },
+    progress () {
+      let percent = this.audio.currentTime / this.audio.duration
+      this.progNow.style.width = percent * this.progBar.clientWidth + 'px'
+      this.progDrag.style.left = percent * this.progBar.clientWidth - 8 + 'px'
+    },
+    drag (e) {
+      const w = this.progNow.clientWidth
+      const maxW = this.progBar.clientWidth
+      const x = e.clientX
+
+      const self = this
+      let setTime = null
+      document.onmousemove = function (e) {
+        let newW = e.clientX - x + w
+        if (newW < 0) {
+          newW = 0
+        } else if (newW > maxW) {
+          newW = maxW
+        }
+        self.progNow.style.width = newW + 'px'
+        self.progDrag.style.left = newW - 8 + 'px'
+        const tempTime = (newW / maxW) * self.audio.duration
+        setTime = tempTime
+        self.time(tempTime, 'currTime')
+      }
+
+      document.onmouseup = function () {
+        document.onmousemove = null
+        self.audio.currentTime = setTime
+      }
+    }
+  },
+  mounted () {
+    this.init()
+    console.log(this.audio.readyState)
   }
 }
 </script>
@@ -192,7 +290,6 @@ span.next {
   top: 4px;
 
   box-sizing: border-box;
-  width: 30px;
   height: 4px;
 
   border-radius: 2px;
@@ -202,7 +299,6 @@ span.next {
 .prog-drag {
   position: absolute;
   top: -1px;
-  left: 25px;
 
   display: inline-block;
 

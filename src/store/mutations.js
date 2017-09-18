@@ -1,6 +1,18 @@
 import * as types from './mutation-types'
 
 export default {
+  // 记录新歌
+  [types.RECORD_NEW_SONGS] (state, { data }) {
+    state.newSongs = data.result
+  },
+  // 记录每日推荐
+  [types.RECORD_DAILY_RECOM] (state, { data }) {
+    state.dailyRecom = data.result
+  },
+  // 记录推荐歌单
+  [types.RECORD_PERSONALIZED] (state, { data }) {
+    state.personalized = data.result
+  },
   // 记录banner图信息
   [types.RECORD_BANNER] (state, { data }) {
     state.banners = data.banners

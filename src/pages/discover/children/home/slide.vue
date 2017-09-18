@@ -1,54 +1,46 @@
 <template>
-  <div class="home">
-    <div class="slide" ref="slide">
-      <ul class="slide_ul">
-        <li class="slide_li" v-for="item of banners" :key="item.id">
-          <a :href="item.url===''?'#':item.url">
-            <img :src="item.pic" alt="">
-            <span class="slide_tag" :class="item.titleColor">{{item.typeTitle}}</span>
-          </a>
-        </li>
-      </ul>
-      <div class="slide_switch" @mouseenter="pause()" @mouseleave="start()">
-        <span class="prev" @click="prev()" @mouseenter="pause()">
-          <svg>
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#banner_arr"></use>
-          </svg>
-        </span>
-        <span class="next" @click="next()" @mouseenter="pause()">
-          <svg>
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#banner_arr"></use>
-          </svg>
-        </span>
-      </div>
-      <ul class="slide_tab">
-        <li class="slide_tab-li" v-for="(item,i) of banners" :key="item.id" @mouseenter="Switch(i)" @mouseleave="start()"></li>
-      </ul>
+  <div class="slide">
+    <ul class="slide_pic">
+      <li class="slide_li" v-for="item of banners" :key="item.id" ref="slideImg">
+        <a :href="item.url===''?'#':item.url">
+          <img :src="item.pic" alt="">
+        </a>
+        <span class="slide_tag" :class="item.titleColor">{{item.typeTitle}}</span>
+      </li>
+    </ul>
+    <div class="slide_switch" @mouseenter="pause()" @mouseleave="start()">
+      <span class="prev" @click="prev()" @mouseenter="pause()">
+        <svg>
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#banner_arr"></use>
+        </svg>
+      </span>
+      <span class="next" @click="next()" @mouseenter="pause()">
+        <svg>
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#banner_arr"></use>
+        </svg>
+      </span>
     </div>
+    <ul class="slide_tab">
+      <li class="slide_tab-li" v-for="(item,i) of banners" :key="item.id" @mouseenter="Switch(i)" @mouseleave="start()" ref="slideTab"></li>
+    </ul>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { getBanner } from '../../../../utils/get-data.js'
 export default {
-  name: 'personalized',
+  name: 'slide',
   data () {
     return {
-      msg: 'personalized',
       index: 0,
       timer: null,
-      len: null
+      len: null,
+      banners: null,
+      imglis: null,
+      tablis: null
     }
   },
-  computed: {
-    ...mapState([
-      'banners'
-    ])
-  },
   methods: {
-    ...mapActions([
-      'getBanner'
-    ]),
     start () {
       this.slideStyle()
       this.timer = setInterval(this.autoPlay, 5000)
@@ -79,13 +71,11 @@ export default {
       this.slideStyle()
     },
     slideStyle () {
-      const imglis = this.$refs.slide.querySelectorAll('.slide_li')
-      const tablis = this.$refs.slide.querySelectorAll('.slide_tab-li')
-      imglis.forEach((item, index) => {
-        tablis[index].className = 'slide_tab-li'
+      this.imglis.forEach((item, index) => {
+        this.tablis[index].className = 'slide_tab-li'
         if (index === this.index) {
           item.className = 'slide_li curr'
-          tablis[index].className = 'slide_tab-li curr'
+          this.tablis[index].className = 'slide_tab-li curr'
         } else if (index === ((this.index === this.len - 1) ? 0 : (this.index + 1))) {
           item.className = 'slide_li next'
         } else if (index === ((this.index === 0) ? (this.len - 1) : (this.index - 1))) {
@@ -97,9 +87,14 @@ export default {
     }
   },
   mounted: async function () {
-    await this.getBanner()
+    const res = await getBanner()
+    this.banners = res.data.banners
     this.len = this.banners.length
-    this.start()
+    this.$nextTick(function () {
+      this.imglis = this.$refs.slideImg
+      this.tablis = this.$refs.slideTab
+      this.start()
+    })
   }
 }
 </script>
@@ -110,7 +105,8 @@ export default {
   position: relative;
 }
 
-.slide_ul {
+.slide_pic {
+  position: relative;
   list-style: none;
   overflow: hidden;
   height: 200px;
@@ -128,9 +124,12 @@ export default {
   height: 200px;
 }
 
+
+
 /* 
  * 每张图片上面默认盖上一个透明的遮罩
  */
+
 .slide_li::before {
   position: absolute;
   content: '';
@@ -142,24 +141,13 @@ export default {
   transition: .45s;
   left: 0;
   top: 0;
-}
-
-.slide_li::after{
-  position: absolute;
-  display: block;
-  content: '';
-  left: 0;
-  bottom: 0;
-  right: 0;
-  top: 0;
-  border: 1px solid rgba(0, 0, 0, .1);
-  z-index: 10;
-  box-sizing: content-box;
+  transform: translateZ(0);
 }
 
 /* 
  * class为prev和next时改变遮罩透明度
  */
+
 .slide_li.next::before,
 .slide_li.prev::before {
   opacity: 0.7;
@@ -169,26 +157,29 @@ export default {
  * 当前图片z-index比遮罩层高;
  * 用位置改变及缩放作为动画效果
 */
+
 .slide_li.curr {
-  z-index: 6;
+  z-index: 10;
   transform: scale(1);
   left: calc(50% - 270px);
+  transform: translateZ(0);
 }
 
 .slide_li.next,
 .slide_li.prev {
   transform: scale(0.95);
-  z-index: 3;
 }
 
 .slide_li.next {
   transform-origin: right bottom;
   left: calc(100% - 540px);
+  z-index: 2;
 }
 
 .slide_li.prev {
   transform-origin: left bottom;
   left: 0;
+  z-index: 3;
 }
 
 .slide_li img,
@@ -196,22 +187,33 @@ export default {
   position: absolute;
   height: 100%;
   width: 100%;
-  z-index: 2;
 }
 
-.slide_li.curr a {
-  z-index: 11;
+.slide_li.curr a::after{
+  content: '';
+  position: absolute;
+  display: block;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  border: solid 1px rgba(0, 0, 0, .1);
+  box-sizing: border-box;
 }
 
 /* 
  * 切换按钮
  */
- .slide_switch{
-   position: absolute;
-   height: 200px;
-   width: 100%;
-   top: 0;
- }
+
+.slide_switch {
+  position: absolute;
+  height: 200px;
+  width: 100%;
+  top: 0;
+  z-index: 5;
+}
+
 .slide_switch .prev,
 .slide_switch .next {
   display: block;
@@ -219,10 +221,15 @@ export default {
   bottom: 0;
   height: 190px;
   width: calc(50% - 270px);
-  z-index: 5;
+  z-index: 1;
   cursor: pointer;
   box-sizing: border-box;
   opacity: 0;
+}
+
+.slide_pic:hover ~ .slide_switch .prev,
+.slide_pic:hover ~ .slide_switch .next{
+  opacity: 1;
 }
 
 .slide_switch:hover .prev,
@@ -275,6 +282,8 @@ export default {
   border-radius: 9px 0 0 9px;
   line-height: 18px;
   height: 18px;
+  transform: translateZ(0);
+  pointer-events: none;
 }
 
 .slide_tag.red {
@@ -288,6 +297,7 @@ export default {
 /*
  * 轮播图底部指示器
  */
+
 .slide_tab {
   margin-top: 8px;
   line-height: 2px;

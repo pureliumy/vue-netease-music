@@ -39,10 +39,23 @@ svg,
 use,
 input,
 span,
-img {
+img,
+h1,
+h2,
+h3,
+h4 {
   margin: 0;
   padding: 0;
   outline: none;
+}
+
+body {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 a {
