@@ -27,12 +27,12 @@
     <div class="header-user">
       <img v-bind:style="login?{'backgroundImg':'url(' + user.face + ')'}:{'background':'url('+defaultFace+')'}"
            class="user-face">
-      <div class="name">
+      <a class="name">
         <span class="user-name">{{login ? user.name : '未登录'}}</span>
         <svg class="head-arr">
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#head_arr"></use>
         </svg>
-      </div>
+      </a>
     </div>
     <div class="header-tool">
       <ul class="tool-ul">

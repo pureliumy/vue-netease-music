@@ -8,7 +8,10 @@ const Home = resolve => require(['../pages/discover/children/home/home'], resolv
 const Djradio = resolve => require(['../pages/discover/children/djradio'], resolve)
 const Rank = resolve => require(['../pages/discover/children/rank'], resolve)
 const Artist = resolve => require(['../pages/discover/children/artist'], resolve)
-const Album = resolve => require(['../pages/discover/children/album'], resolve)
+const NewSong = resolve => require(['../pages/discover/children/album'], resolve)
+
+const AlbumDetail = resolve => require(['../pages/album/album'], resolve)
+
 const Download = resolve => require(['../pages/download/download'], resolve)
 const Fm = resolve => require(['../pages/fm/fm'], resolve)
 const Friend = resolve => require(['../pages/friend/friend'], resolve)
@@ -50,7 +53,7 @@ const routes = [
             component: Artist
           }, {
             path: 'album',
-            component: Album
+            component: NewSong
           }
         ]
       }, {
@@ -89,7 +92,12 @@ const routes = [
             component: MyPlaylist
           }
         ]
-      }]
+      }, {
+        path: 'album/:albumId',
+        name: 'album',
+        component: AlbumDetail
+      }
+    ]
   }
 ]
 

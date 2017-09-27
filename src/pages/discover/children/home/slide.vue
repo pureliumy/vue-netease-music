@@ -3,7 +3,7 @@
     <ul class="slide_pic">
       <li class="slide_li" v-for="item of banners" :key="item.id" ref="slideImg">
         <a :href="item.url===''?'#':item.url">
-          <img :src="item.pic" alt="">
+          <img :src="item.picUrl+'?param=540y200'" alt="">
         </a>
         <span class="slide_tag" :class="item.titleColor">{{item.typeTitle}}</span>
       </li>
@@ -43,13 +43,10 @@ export default {
   methods: {
     start () {
       this.slideStyle()
-      this.timer = setInterval(this.autoPlay, 5000)
+      this.timer = setInterval(this.next, 5000)
     },
     pause () {
       clearInterval(this.timer)
-    },
-    next () {
-      this.autoPlay()
     },
     prev () {
       this.index--
@@ -58,16 +55,16 @@ export default {
       }
       this.slideStyle()
     },
-    Switch (i) {
-      clearInterval(this.timer)
-      this.index = i
-      this.slideStyle()
-    },
-    autoPlay () {
+    next () {
       this.index++
       if (this.index === this.len) {
         this.index = 0
       }
+      this.slideStyle()
+    },
+    Switch (i) {
+      clearInterval(this.timer)
+      this.index = i
       this.slideStyle()
     },
     slideStyle () {
@@ -126,6 +123,7 @@ export default {
 
 
 
+
 /* 
  * 每张图片上面默认盖上一个透明的遮罩
  */
@@ -144,6 +142,7 @@ export default {
   transform: translateZ(0);
 }
 
+
 /* 
  * class为prev和next时改变遮罩透明度
  */
@@ -152,6 +151,7 @@ export default {
 .slide_li.prev::before {
   opacity: 0.7;
 }
+
 
 /*
  * 当前图片z-index比遮罩层高;
@@ -189,7 +189,7 @@ export default {
   width: 100%;
 }
 
-.slide_li.curr a::after{
+.slide_li.curr a::after {
   content: '';
   position: absolute;
   display: block;
@@ -201,6 +201,7 @@ export default {
   border: solid 1px rgba(0, 0, 0, .1);
   box-sizing: border-box;
 }
+
 
 /* 
  * 切换按钮
@@ -227,8 +228,8 @@ export default {
   opacity: 0;
 }
 
-.slide_pic:hover ~ .slide_switch .prev,
-.slide_pic:hover ~ .slide_switch .next{
+.slide_pic:hover~.slide_switch .prev,
+.slide_pic:hover~.slide_switch .next {
   opacity: 1;
 }
 
@@ -269,9 +270,11 @@ export default {
   right: -3px;
 }
 
+
 /*
  * banner右下角标签
  */
+
 .slide_tag {
   position: absolute;
   right: -2px;
@@ -293,6 +296,7 @@ export default {
 .slide_tag.blue {
   background: #4a79cc;
 }
+
 
 /*
  * 轮播图底部指示器

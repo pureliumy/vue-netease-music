@@ -28,31 +28,55 @@
           <span class="recom-album_copywrite copywrite">每日歌曲推荐</span>
         </div>
         <!-- 每日推荐结束 -->
-
         <!-- 其他歌单推荐开始 -->
-        <div class="recom-album_item">
-          <a href="#" class="recom-album_cover">
-            <img src="../../../../assets/temp/list_temp2.jpg" alt="" class="img">
-            <span class="recom-album_tip">根据您的音乐口味生成每日更新</span>
-            <div class="recom-album_play-count">
-              <svg class="recom-album_icon icon-earphone">
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#earphone"></use>
-              </svg>
-              <span class="recom-album_count">28万</span>
-            </div>
-            <span class="btn-play">
+        <div class="recom-album_item" v-for="item in recom" :key="item.id">
+          <a class="recom-album_cover">
+            <router-link :to="{name:'album',params:{albumId:item.id}}">
+              <img :src="item.picUrl+'?param=200y200'" alt="" class="img">
+              <span class="recom-album_tip">{{item.copywriter}}</span>
+              <div class="recom-album_play-count">
+                <svg class="recom-album_icon icon-earphone">
+                  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#earphone"></use>
+                </svg>
+                <span class="recom-album_count">{{countFormate(item.playCount)}}</span>
+              </div>
+            </router-link>
+            <span class="btn-play" @click="coverClick(item)">
               <svg>
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
               </svg>
             </span>
           </a>
-          <span class="recom-album_copywrite copywrite">古装影视相思曲，如诗情感如画意</span>
+          <a class="recom-album_copywrite copywrite" href="#">{{item.name}}</a>
         </div>
         <!-- 其他歌单推荐结束 -->
+
+        <!-- 为补足空位额外添加三个推荐，来自精选碟 -->
+        <div class="recom-album_item" v-for="item in moreRecom" :key="item.id">
+          <a class="recom-album_cover">
+            <router-link :to="{name:'album',params:{albumId:item.id}}">
+              <img :src="item.coverImgUrl+'?param=200y200'" alt="" class="img">
+              <span class="recom-album_tip">{{item.copywriter}}</span>
+              <div class="recom-album_play-count">
+                <svg class="recom-album_icon icon-earphone">
+                  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#earphone"></use>
+                </svg>
+                <span class="recom-album_count">{{countFormate(item.playCount)}}</span>
+              </div>
+            </router-link>
+            <span class="btn-play" @click="coverClick(item)">
+              <svg>
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
+              </svg>
+            </span>
+          </a>
+          <a class="recom-album_copywrite copywrite" href="#">{{item.name}}</a>
+        </div>
+        <!--补位结束 -->
+
       </div>
     </div>
     <!-- 推荐歌单结束 -->
-
     <!-- 独家放送开始 -->
     <div class="recom-private container">
       <div class="head">
@@ -62,21 +86,22 @@
         </span>
       </div>
       <div class="flex">
-        <div class="recom-private_item">
-          <a href="#" class="recom-private_cover">
-            <img src="../../../../assets/temp/mv_temp1.jpg" alt="" class="img">
+        <div class="recom-private_item" v-for="item in priva" :key="item.id">
+          <router-link class="recom-private_cover" :to="{name:'album'}" tag="a">
+            <img :src="item.sPicUrl" alt="" class="img">
             <span class="btn-tag">
               <svg>
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#act"></use>
               </svg>
             </span>
+          </router-link>
+          <a href="#" class="recom-album_copywrite">
+            <span class="copywrite">{{item.name}}</span>
           </a>
-          <span class="recom-album_copywrite copywrite">古装影视相思曲，如诗情感如画意</span>
         </div>
       </div>
     </div>
     <!-- 独家放送结束 -->
-
     <!-- 最新音乐开始 -->
     <div class="new-songs container">
       <div class="head">
@@ -86,15 +111,15 @@
         </span>
       </div>
       <ul class="new-songs_ul">
-        <li class="new-songs_li">
-          <span class="order">01</span>
+        <li class="new-songs_li" v-for="(item, index) in newSongs" :key="item.id">
+          <span class="order">{{index}}</span>
           <span class="play-status">
             <svg>
               <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#list-play"></use>
             </svg>
           </span>
-          <a href="#" class="new-songs_cover">
-            <img src="../../../../assets/temp/mv_temp1.jpg" alt="" class="img">
+          <a class="new-songs_cover" @click="coverClick(item)">
+            <img :src="item.song.album.picUrl+'?param=40y40'" alt="" class="img">
             <span class="btn-play">
               <svg>
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
@@ -102,325 +127,32 @@
             </span>
           </a>
           <h3>
-            <span class="title">零</span>
-            <span class="alias">（电影《英雄对决》推广曲）</span>
+            <span class="title">{{item.song.name}}</span>
+            <span class="alias">
+              {{item.song.alias.toString() ? ('（' + item.song.alias + '）') : '' || item.song.transNames ? '（' + item.song.transNames.toString() + '）' : ''}}
+            </span>
           </h3>
           <div class="info">
-            <svg class="sq-tag">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sq"></use>
-            </svg>
-            <a href="#" class="mv-tag">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mv"></use>
-              </svg>
-            </a>
-            <a href="#" class="author-name">
-              <span>欧阳靖</span>
-            </a>
-          </div>
-        </li>
-
-        <li class="new-songs_li">
-          <span class="order">01</span>
-          <span class="play-status">
-            <svg>
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#list-play"></use>
-            </svg>
-          </span>
-          <a href="#" class="new-songs_cover">
-            <img src="../../../../assets/temp/mv_temp1.jpg" alt="" class="img">
-            <span class="btn-play">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
+            <span>
+              <svg class="sq-tag" v-if="item.song.privilege.fl===320000">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sq"></use>
               </svg>
             </span>
-          </a>
-          <h3>
-            <span class="title">零</span>
-            <span class="alias">（电影《英雄对决》推广曲）</span>
-          </h3>
-          <div class="info">
-            <svg class="sq-tag">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sq"></use>
-            </svg>
-            <a href="#" class="mv-tag">
+            <a href="#" class="mv-tag" v-show="item.song.mvid">
               <svg>
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mv"></use>
               </svg>
             </a>
-            <a href="#" class="author-name">
-              <span>欧阳靖</span>
-            </a>
-          </div>
-        </li>
-        <li class="new-songs_li">
-          <span class="order">01</span>
-          <span class="play-status">
-            <svg>
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#list-play"></use>
-            </svg>
-          </span>
-          <a href="#" class="new-songs_cover">
-            <img src="../../../../assets/temp/mv_temp1.jpg" alt="" class="img">
-            <span class="btn-play">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
-              </svg>
-            </span>
-          </a>
-          <h3>
-            <span class="title">零</span>
-            <span class="alias">（电影《英雄对决》推广曲）</span>
-          </h3>
-          <div class="info">
-            <svg class="sq-tag">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sq"></use>
-            </svg>
-            <a href="#" class="mv-tag">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mv"></use>
-              </svg>
-            </a>
-            <a href="#" class="author-name">
-              <span>欧阳靖</span>
-            </a>
-          </div>
-        </li>
-        <li class="new-songs_li">
-          <span class="order">01</span>
-          <span class="play-status">
-            <svg>
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#list-play"></use>
-            </svg>
-          </span>
-          <a href="#" class="new-songs_cover">
-            <img src="../../../../assets/temp/mv_temp1.jpg" alt="" class="img">
-            <span class="btn-play">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
-              </svg>
-            </span>
-          </a>
-          <h3>
-            <span class="title">零</span>
-            <span class="alias">（电影《英雄对决》推广曲）</span>
-          </h3>
-          <div class="info">
-            <svg class="sq-tag">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sq"></use>
-            </svg>
-            <a href="#" class="mv-tag">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mv"></use>
-              </svg>
-            </a>
-            <a href="#" class="author-name">
-              <span>欧阳靖</span>
-            </a>
-          </div>
-        </li>
-        <li class="new-songs_li">
-          <span class="order">01</span>
-          <span class="play-status">
-            <svg>
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#list-play"></use>
-            </svg>
-          </span>
-          <a href="#" class="new-songs_cover">
-            <img src="../../../../assets/temp/mv_temp1.jpg" alt="" class="img">
-            <span class="btn-play">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
-              </svg>
-            </span>
-          </a>
-          <h3>
-            <span class="title">零</span>
-            <span class="alias">（电影《英雄对决》推广曲）</span>
-          </h3>
-          <div class="info">
-            <svg class="sq-tag">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sq"></use>
-            </svg>
-            <a href="#" class="mv-tag">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mv"></use>
-              </svg>
-            </a>
-            <a href="#" class="author-name">
-              <span>欧阳靖</span>
-            </a>
-          </div>
-        </li>
-        <li class="new-songs_li">
-          <span class="order">01</span>
-          <span class="play-status">
-            <svg>
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#list-play"></use>
-            </svg>
-          </span>
-          <a href="#" class="new-songs_cover">
-            <img src="../../../../assets/temp/mv_temp1.jpg" alt="" class="img">
-            <span class="btn-play">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
-              </svg>
-            </span>
-          </a>
-          <h3>
-            <span class="title">零</span>
-            <span class="alias">（电影《英雄对决》推广曲）</span>
-          </h3>
-          <div class="info">
-            <svg class="sq-tag">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sq"></use>
-            </svg>
-            <a href="#" class="mv-tag">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mv"></use>
-              </svg>
-            </a>
-            <a href="#" class="author-name">
-              <span>欧阳靖</span>
-            </a>
-          </div>
-        </li>
-        <li class="new-songs_li">
-          <span class="order">01</span>
-          <span class="play-status">
-            <svg>
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#list-play"></use>
-            </svg>
-          </span>
-          <a href="#" class="new-songs_cover">
-            <img src="../../../../assets/temp/mv_temp1.jpg" alt="" class="img">
-            <span class="btn-play">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
-              </svg>
-            </span>
-          </a>
-          <h3>
-            <span class="title">零</span>
-            <span class="alias">（电影《英雄对决》推广曲）</span>
-          </h3>
-          <div class="info">
-            <svg class="sq-tag">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sq"></use>
-            </svg>
-            <a href="#" class="mv-tag">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mv"></use>
-              </svg>
-            </a>
-            <a href="#" class="author-name">
-              <span>欧阳靖</span>
-            </a>
-          </div>
-        </li>
-        <li class="new-songs_li">
-          <span class="order">01</span>
-          <span class="play-status">
-            <svg>
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#list-play"></use>
-            </svg>
-          </span>
-          <a href="#" class="new-songs_cover">
-            <img src="../../../../assets/temp/mv_temp1.jpg" alt="" class="img">
-            <span class="btn-play">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
-              </svg>
-            </span>
-          </a>
-          <h3>
-            <span class="title">零</span>
-            <span class="alias">（电影《英雄对决》推广曲）</span>
-          </h3>
-          <div class="info">
-            <svg class="sq-tag">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sq"></use>
-            </svg>
-            <a href="#" class="mv-tag">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mv"></use>
-              </svg>
-            </a>
-            <a href="#" class="author-name">
-              <span>欧阳靖</span>
-            </a>
-          </div>
-        </li>
-        <li class="new-songs_li">
-          <span class="order">01</span>
-          <span class="play-status">
-            <svg>
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#list-play"></use>
-            </svg>
-          </span>
-          <a href="#" class="new-songs_cover">
-            <img src="../../../../assets/temp/mv_temp1.jpg" alt="" class="img">
-            <span class="btn-play">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
-              </svg>
-            </span>
-          </a>
-          <h3>
-            <span class="title">零</span>
-            <span class="alias">（电影《英雄对决》推广曲）（电影《英雄对决》推广曲）</span>
-          </h3>
-          <div class="info">
-            <svg class="sq-tag">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sq"></use>
-            </svg>
-            <a href="#" class="mv-tag">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mv"></use>
-              </svg>
-            </a>
-            <a href="#" class="author-name">
-              <span>欧阳靖</span>
-            </a>
-          </div>
-        </li>
-        <li class="new-songs_li">
-          <span class="order">01</span>
-          <span class="play-status">
-            <svg>
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#list-play"></use>
-            </svg>
-          </span>
-          <a href="#" class="new-songs_cover">
-            <img src="../../../../assets/temp/mv_temp1.jpg" alt="" class="img">
-            <span class="btn-play">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
-              </svg>
-            </span>
-          </a>
-          <h3>
-            <span class="title">零</span>
-            <span class="alias">（电影《英雄对决》推广曲）</span>
-          </h3>
-          <div class="info">
-            <svg class="sq-tag">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#sq"></use>
-            </svg>
-            <a href="#" class="mv-tag">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mv"></use>
-              </svg>
-            </a>
-            <a href="#" class="author-name">
-              <span>欧阳靖</span>
+            <a href="#" class="author-name" v-for="artist in item.song.artists" :key="artist.id">
+              <span>
+                {{artist.name}}{{item.song.artists.length>1?'/':''}}
+              </span>
             </a>
           </div>
         </li>
       </ul>
     </div>
     <!-- 最新音乐结束 -->
-
     <!-- 推荐MV开始 -->
     <div class="recom-mv container">
       <div class="head">
@@ -430,28 +162,27 @@
         </span>
       </div>
       <div class="flex">
-        <div class="recom-mv_item">
-          <a href="#" class="recom-mv_cover">
-            <img src="../../../../assets/temp/mv_temp2.jpg" alt="" class="img">
-            <span class="recom-mv_tip">根据您的音乐口味生成每日更新</span>
+        <div class="recom-mv_item" v-for="item in mv" :key="item.id">
+          <router-link :to="{name:'album'}" class="recom-mv_cover">
+            <img :src="item.picUrl+'?param=400y225'" alt="" class="img">
+            <span class="recom-mv_tip">{{item.copywriter}}</span>
             <div class="recom-mv_play-count">
               <svg class="recom-mv_icon icon-video">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#video_mv"></use>
               </svg>
-              <span class="recom-mv_count">28万</span>
+              <span class="recom-mv_count">{{countFormate(item.playCount)}}</span>
             </div>
-          </a>
+          </router-link>
           <a href="#" class="recom-mv_copywrite">
-            <span class="copywrite">古装影视相思曲，如诗情感如画意</span>
+            <span class="copywrite">{{item.name}}</span>
           </a>
           <a href="#" class="recom-mv_author">
-            <span>赵雷</span>
+            {{item.artistName}}
           </a>
         </div>
       </div>
     </div>
     <!-- 推荐MV结束 -->
-
     <!-- 主播电台开始 -->
     <div class="recom-dj container">
       <div class="head">
@@ -461,18 +192,20 @@
         </span>
       </div>
       <div class="flex">
-        <div class="recom-dj_item">
-          <a href="#" class="recom-dj_cover">
-            <img src="../../../../assets/temp/list_temp2.jpg" alt="" class="img">
-            <span class="btn-play">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
-              </svg>
-            </span>
-          </a>
-          <div class="recom-dj_info">
-            <a href="#" class="title">从大漠草原奔跑而出的餐桌新美味</a>
-            <a href="#" class="author">围炉夜话</a>
+        <div class="recom-dj_item" v-for="item in dj" :key="item.id">
+          <div class="wrap">
+            <a href="#" class="recom-dj_cover">
+              <img :src="item.picUrl+'?param=80y80'" alt="" class="img">
+              <span class="btn-play">
+                <svg>
+                  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#play_rb"></use>
+                </svg>
+              </span>
+            </a>
+            <div class="recom-dj_info">
+              <a href="#" class="title">{{item.name}}</a>
+              <a href="#" class="author">{{item.program.radio.name}}</a>
+            </div>
           </div>
         </div>
       </div>
@@ -483,33 +216,102 @@
 
 <script>
 import Slide from './slide'
-import { personalized } from '../../../../utils/get-data.js'
+import { getPersonalized, getNewSongs, getPrivate, getRecomMv, getRecomDJ, getMoreRecom, getAlbumDetail } from '../../../../utils/get-data.js'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'home',
-  components: { Slide },
+  components: {
+    Slide
+  },
   data () {
     return {
-      recom: null
+      recom: null,
+      priva: null,
+      newSongs: null,
+      mv: null,
+      dj: null,
+      moreRecom: null
+    }
+  },
+  computed: {
+    ...mapState([
+      'login'
+    ])
+  },
+  methods: {
+    ...mapMutations({
+      playNew: 'PLAY_SONG_BY_ID'
+    }),
+    async initDate () {
+      if (!this.login) {
+        try {
+          const getDataFunc = {
+            'recom': getPersonalized(),
+            'priva': getPrivate(),
+            'newSongs': getNewSongs(),
+            'mv': getRecomMv(),
+            'dj': getRecomDJ(),
+            'moreRecom': getMoreRecom(3)
+          }
+          const allData = await Promise.all(Object.values(getDataFunc))
+          const allResult = []
+          allData.forEach(function ({ data }) {
+            if (data.result) {
+              allResult.push(data.result)
+            } else {
+              allResult.push(data.playlists)
+            }
+          });
+          [this.recom, this.priva, this.newSongs, this.mv, this.dj, this.moreRecom] = [
+            ...allResult
+          ]
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    },
+    countFormate (num) {
+      if (num > 99999) {
+        num = parseInt(num / 10000)
+        return num + '万'
+      }
+      return parseInt(num)
+    },
+    coverClick (item) {
+      switch (item.type) {
+        case 0:
+          // 推荐歌单封面点击，直接将整个歌单作为新的播放列表
+          this.replacePlayList(item)
+          break
+
+        case 4:
+          // 新歌推荐，直接提交更改歌曲id的mutation
+          this.playNew(item)
+          break
+
+        default:
+          // 补位添加的3个没有type属性
+          this.replacePlayList(item)
+          break
+      }
+    },
+    async replacePlayList (item) {
+      const { data: { playlist } } = await getAlbumDetail(item.id)
+      this.playNew(playlist.trackIds[0])
     }
   },
   mounted () {
     this.initDate()
-  },
-  methods: {
-    async initDate () {
-      if (!this.$store.state.login) {
-        const res = await personalized()
-        this.recom = [...res]
-      }
-    }
   }
 }
+
 </script>
 
-
-<style scoped>
+<style scoped="">
 .container {
   position: relative;
+  min-width: 760px;
+  max-width: 1040px;
 }
 
 .head {
@@ -554,6 +356,11 @@ export default {
   width: calc(100% + 18px);
 }
 
+.recom-mv .flex {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
 .recom-album_item,
 .recom-private_item,
 .recom-mv_item,
@@ -574,11 +381,23 @@ export default {
 .recom-private_item,
 .recom-mv_item {
   width: 33.33%;
+  flex: 1 0 auto;
 }
 
 .recom-dj_item {
-  width: 362px;
-  flex-direction: row;
+  width: 50%;
+  margin-bottom: 10px;
+}
+
+.recom-dj_item .wrap {
+  display: flex;
+  flex-flow: row nowrap;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, .05);
+}
+
+.recom-dj_item .wrap {
+  border-bottom: 1px solid rgba(0, 0, 0, .05);
 }
 
 .recom-album_cover,
@@ -589,6 +408,7 @@ export default {
   display: inline-block;
   position: relative;
   line-height: 0;
+  cursor: pointer;
 }
 
 .new-songs_cover {
@@ -633,8 +453,10 @@ export default {
 }
 
 .new-songs_cover .btn-play {
-  left: 7px;
-  top: 7px;
+  left: 9px;
+  top: 9px;
+  width: 20px;
+  height: 20px;
 }
 
 .recom-dj_cover .btn-play {
@@ -666,6 +488,10 @@ export default {
   padding: 7px;
 }
 
+.new-songs_cover .btn-play svg {
+  padding: 5px;
+}
+
 .btn-tag svg {
   width: 28px;
   height: 28px;
@@ -680,10 +506,12 @@ export default {
   left: 0;
   background-color: rgba(0, 0, 0, .5);
   height: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   line-height: 18px;
   padding: 6px 8px;
   width: 100%;
-  transition: .45s .5s;
+  transition: .25s .5s;
   color: #fff;
   box-sizing: border-box;
 }
@@ -727,17 +555,19 @@ export default {
 }
 
 .recom-mv_copywrite,
-.recom-mv_author {
+.recom-mv_author,
+.recom-album_copywrite {
   width: fit-content;
 }
 
 .copywrite {
   font-size: 14px;
-  line-height: 20px;
+  line-height: 18px;
   font-family: "Noto Sans CJK SC Regular";
+  margin: 3px 0 2px;
+  display: inline-block;
   color: #333;
-  display: block;
-  margin: 2px 0 3px;
+  letter-spacing: -0.05em
 }
 
 .copywrite:hover {
@@ -747,6 +577,10 @@ export default {
 .recom-mv_author {
   font-size: 12px;
   color: #666;
+}
+
+.recom-mv_author:hover {
+  color: #333;
 }
 
 .recom-mv_copywrite .copywrite,
@@ -906,7 +740,7 @@ export default {
 
 .recom-dj_info a.title {
   color: #333;
-  font-size: 14px;
+  font-size: 13px;
   width: fit-content;
 }
 

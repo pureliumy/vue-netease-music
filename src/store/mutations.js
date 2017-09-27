@@ -1,6 +1,11 @@
 import * as types from './mutation-types'
 
 export default {
+  // 改变当前播放歌曲
+  [types.PLAY_SONG_BY_ID] (state, payload) {
+    state.sid = payload.id
+  },
+
   // 记录新歌
   [types.RECORD_NEW_SONGS] (state, { data }) {
     state.newSongs = data.result

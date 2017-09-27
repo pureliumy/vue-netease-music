@@ -8,17 +8,12 @@ export default {
   },
 
   async getPersonalized ({ commit, state }) {
-    let res = await data.personalized()
+    let res = await data.getPersonalized()
     commit(types.RECORD_PERSONALIZED, res)
   },
 
-  async getDailyRecom ({ commit, state }) {
-    let res = await data.dailyRecom()
-    commit(types.RECORD_DAILY_RECOM, res)
-  },
-
   async getNewSongs ({ commit, state }) {
-    let res = await data.newSongs()
+    let res = await data.getNewSongs()
     commit(types.RECORD_NEW_SONGS, res)
   }
 }

@@ -49,6 +49,18 @@ h4 {
   outline: none;
 }
 
+span,
+h1,
+h2,
+h3,
+p {
+  cursor: default;
+}
+
+a span {
+  cursor: pointer;
+}
+
 body {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
