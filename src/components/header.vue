@@ -85,7 +85,9 @@
     name: 'header',
     data () {
       return {
-        hIndex: window.sessionStorage.getItem('hIndex') || 1,  // 当前路由在历史记录中的位置
+        // hIndex: window.sessionStorage.getItem('hIndex') || 1,  // 当前路由在历史记录中的位置
+        hIndex: 0,
+        maxLength: window.history.length,
         keywords: '',
         msg: 'Welcome guy!',
         placeholder: '搜索音乐，歌手，歌词，用户',
@@ -94,29 +96,29 @@
       }
     },
     computed: {
-      newtab: function () {
-        return !window.sessionStorage.getItem('hLength') && window.history.length === 2
-      },
+      // newtab: function () {
+      //   return !window.sessionStorage.getItem('hLength') && window.history.length === 2
+      // },
       // 路由历史记录的长度，判断若是通过新标签页输入网址打开，则减去新标签页
       // 将hLength存入sessionstorage，若初始为空且history.length为2，则为新标签页打开
-      hLength: function () {
-        if (this.newtab) {
-          return window.history.length - 1
-        } else {
-          return window.history.length
-        }
-      },
+      // hLength: function () {
+      //   if (this.newtab) {
+      //     return window.history.length - 1
+      //   } else {
+      //     return window.history.length
+      //   }
+      // },
       back: function () {
-        return this.hIndex > 1
+        return this.hIndex > 0 && this.hIndex <= this.maxLength
       },
       forward: function () {
-        return this.hIndex < this.hLength
+        return this.hIndex >= 0 && this.hIndex < this.maxLength
       }
     },
     watch: {
       $route: function () {
-        if (window.history.length > this.hLength) {
-          this.hLength = window.history.length
+        if (window.history.length > this.maxLength) {
+          this.maxLength = window.history.length
           this.hIndex++
         }
       }

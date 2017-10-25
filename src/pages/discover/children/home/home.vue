@@ -11,7 +11,7 @@
         <!-- 每日推荐开始 -->
         <div class="recom-album_item">
           <a href="#" class="recom-album_cover">
-            <img src="../../../../assets/temp/list_temp1.jpg" alt="" class="img">
+            <img src="http://test.imfee.cn/nem/static/img/list_temp1.03f8a98.jpg" alt="" class="img">
             <span class="recom-album_tip">根据您的音乐口味生成每日更新</span>
             <div class="recom-album_play-count">
               <svg class="recom-album_icon icon-earphone">
